@@ -1,0 +1,54 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: skill-dashboard-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: skill_dashboard_db
+      MYSQL_USER: skill_user
+      MYSQL_PASSWORD: skill_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  springboot-app:
+    build:
+      context: ./skill-dashboard
+      dockerfile: Dockerfile
+    container_name: skill-dashboard-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/skill_dashboard_db
+      SPRING_DATASOURCE_USERNAME: skill_user
+      SPRING_DATASOURCE_PASSWORD: skill_password
+      JWT_SECRET: "Rcis0PRylw6AERPnaiukRwieBDZPsMv3YZOngenfEAXXIBOV8SMmrP3Ax+Xr7n4hUu7WERJ23iafkXYVfnXAGQAA"
+    ports:
+      - "8091:8091"
+    volumes:
+      - uploaded_files:/app/uploads
+
+  angular-app:
+    build:
+      context: ./angular-learning-app
+      dockerfile: Dockerfile
+    container_name: skill-dashboard-frontend
+    restart: unless-stopped
+    depends_on:
+      - springboot-app
+    ports:
+      - "4200:80"
+
+volumes:
+  mysql_data:
+  uploaded_files:

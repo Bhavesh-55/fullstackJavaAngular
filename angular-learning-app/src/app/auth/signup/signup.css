@@ -1,0 +1,61 @@
+.auth-page {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.auth-card {
+  width: 420px;
+  padding: 25px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.auth-card h2 {
+  text-align: center;
+  color: #1976d2;
+}
+
+.form-control {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-control label {
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.form-control input {
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+}
+
+small,
+.error-message {
+  color: red;
+  margin-top: 5px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.auth-card p {
+  text-align: center;
+}

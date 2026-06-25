@@ -1,0 +1,10 @@
+.page {
+  width: 90%;
+  margin: 30px auto;
+  font-family: Arial, sans-serif;
+}
+
+.page h2 {
+  text-align: center;
+  color: #1976d2;
+}

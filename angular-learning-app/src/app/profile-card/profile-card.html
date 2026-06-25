@@ -1,0 +1,68 @@
+<div
+  class="profile-card"
+  [class.available-card]="isAvailable"
+  [class.not-available-card]="!isAvailable"
+>
+  <img
+    class="profile-image"
+    [src]="profileImageUrl"
+    [alt]="profileImageAlt"
+    [title]="name"
+  >
+
+  <h1>{{ name }}</h1>
+
+  <p><strong>Role:</strong> {{ role }}</p>
+  <p><strong>Experience:</strong> {{ experience }}</p>
+  <p><strong>Current Skill:</strong> {{ currentSkill }}</p>
+  <p><strong>Learning Skill:</strong> {{ learningSkill }}</p>
+  <p><strong>Location:</strong> {{ location }}</p>
+
+  <p>
+    <strong>Status:</strong>
+  </p>
+
+  @if (isAvailable) {
+    <p class="available">Available for Project</p>
+  } @else {
+    <p class="not-available">Not Available</p>
+  }
+
+  <button (click)="changeAvailability()">
+    Change Availability
+  </button>
+
+  <button
+    [disabled]="!isAvailable"
+    [attr.aria-label]="contactButtonLabel"
+  >
+    Contact Developer
+  </button>
+
+  <div class="completion-section">
+    <p><strong>Profile Completion:</strong> {{ profileCompletion }}%</p>
+
+    <div class="progress-container">
+      <div
+        class="progress-bar"
+        [style.width.%]="profileCompletion" 
+        [style.background-color]="profileCompletion >= 80 ? 'green' : 'orange'"
+      >
+      </div>
+    </div>
+
+    <button
+      (click)="increaseProfileCompletion()"
+      [disabled]="profileCompletion === 100"
+    >
+      Increase Completion
+    </button>
+
+    <button
+      (click)="decreaseProfileCompletion()"
+      [disabled]="profileCompletion === 0"
+    >
+      Decrease Completion
+    </button>
+  </div>
+</div>
