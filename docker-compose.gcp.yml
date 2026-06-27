@@ -1,0 +1,90 @@
+x-gcp-logging: &gcp-logging
+  driver: gcplogs
+  options:
+    gcp-project: ${PROJECT_ID}
+    labels: service,env
+    gcp-log-cmd: "false"
+
+
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: skill-dashboard-mysql
+    restart: unless-stopped
+
+    labels:
+      service: mysql
+      env: gcp
+
+    logging: *gcp-logging
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command:
+      - "--innodb-buffer-pool-size=64M"
+      - "--max-connections=25"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - skill-dashboard-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  springboot-app:
+    image: ${BACKEND_IMAGE}
+    container_name: skill-dashboard-backend
+    restart: unless-stopped
+
+    labels:
+      service: backend
+      env: gcp
+    
+    logging: *gcp-logging
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JAVA_TOOL_OPTIONS: "-Xms128m -Xmx384m"
+    volumes:
+      - uploaded_files:/app/uploads
+    networks:
+      - skill-dashboard-network
+
+  angular-app:
+    image: ${FRONTEND_IMAGE}
+    container_name: skill-dashboard-frontend
+    restart: unless-stopped
+
+    labels:
+      service: frontend
+      env: gcp
+
+    logging: *gcp-logging
+    
+    depends_on:
+      - springboot-app
+    ports:
+      - "80:80"
+    networks:
+      - skill-dashboard-network
+
+volumes:
+  mysql_data:
+  uploaded_files:
+
+networks:
+  skill-dashboard-network:
+    driver: bridge
