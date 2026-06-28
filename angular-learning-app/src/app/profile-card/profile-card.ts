@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-profile-card',
@@ -7,17 +9,19 @@ import { Component } from '@angular/core';
   styleUrl: './profile-card.css',
 })
 export class ProfileCard {
-  name = 'Bhavesh';
-  role = 'Senior Backend Developer';
-  experience = '4+ Years';
-  currentSkill = 'Java, Spring Boot, Microservices';
-  learningSkill = 'Angular';
-  location = 'Pune';
+  private authService = inject(AuthService);
+
+  currentUser = this.authService.currentUser;
+
+  displayName = computed(() => this.currentUser()?.name || 'User');
+  displayEmail = computed(() => this.currentUser()?.email || '-');
+  displayRole = computed(() => this.currentUser()?.role || '-');
+  displayUserId = computed(() => this.currentUser()?.userId || '-');
 
   isAvailable = true;
 
   profileImageUrl = 'https://via.placeholder.com/150';
-  profileImageAlt = 'Developer profile image';
+  profileImageAlt = 'Logged-in user profile image';
 
   profileCompletion = 70;
 
