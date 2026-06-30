@@ -14,10 +14,10 @@ DEPLOY_TARGET="${1:-frontend}"
 
 # -------- GCP CONFIGURATION --------
 PROJECT_ID="project-f689a914-3465-4c93-9ef"
-REGION="us-central1"
-ZONE="us-central1-a"
+REGION="asia-south1"
+ZONE="asia-south1-a"
 REPO_NAME="skill-dashboard-repo"
-VM_NAME="skill-dashboard-vm"
+VM_NAME="skill-dashboard-backup-20260630-174045"
 
 # -------- PROJECT PATHS --------
 BACKEND_DIR="./skill-dashboard-backend"
@@ -125,6 +125,8 @@ echo "Deploying on VM..."
 if [[ "$DEPLOY_TARGET" == "frontend" ]]; then
   gcloud compute ssh "$VM_NAME" --zone="$ZONE" --quiet --command="
     set -e
+    gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
+    gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://asia-south1-docker.pkg.dev
     docker compose --env-file .env.gcp -f docker-compose.gcp.yml pull angular-app
     docker compose --env-file .env.gcp -f docker-compose.gcp.yml up -d --no-deps angular-app
     docker image prune -f
@@ -135,6 +137,8 @@ fi
 if [[ "$DEPLOY_TARGET" == "backend" ]]; then
   gcloud compute ssh "$VM_NAME" --zone="$ZONE" --quiet --command="
     set -e
+    gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
+    gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://asia-south1-docker.pkg.dev
     docker compose --env-file .env.gcp -f docker-compose.gcp.yml pull springboot-app
     docker compose --env-file .env.gcp -f docker-compose.gcp.yml up -d --no-deps springboot-app
     docker image prune -f
@@ -145,6 +149,8 @@ fi
 if [[ "$DEPLOY_TARGET" == "all" ]]; then
   gcloud compute ssh "$VM_NAME" --zone="$ZONE" --quiet --command="
     set -e
+    gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
+    gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://asia-south1-docker.pkg.dev
     docker compose --env-file .env.gcp -f docker-compose.gcp.yml pull
     docker compose --env-file .env.gcp -f docker-compose.gcp.yml up -d
     docker image prune -f
