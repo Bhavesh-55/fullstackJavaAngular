@@ -58,6 +58,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       JAVA_TOOL_OPTIONS: "-Xms128m -Xmx384m"
+      GCP_STORAGE_BUCKET: ${GCP_STORAGE_BUCKET}
     volumes:
       - uploaded_files:/app/uploads
     networks:
