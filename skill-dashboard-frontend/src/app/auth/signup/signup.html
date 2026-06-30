@@ -1,0 +1,83 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <h2>Signup</h2>
+
+    @if (errorMessage()) {
+      <p class="error-message">{{ errorMessage() }}</p>
+    }
+
+    <form [formGroup]="signupForm" (ngSubmit)="signup()">
+      <div class="form-control">
+        <label for="name">Name</label>
+
+        <input
+          id="name"
+          type="text"
+          placeholder="Enter name"
+          formControlName="name"
+        >
+
+        @if (nameControl.invalid && nameControl.touched) {
+          @if (nameControl.hasError('required')) {
+            <small>Name is required.</small>
+          }
+
+          @if (nameControl.hasError('minlength')) {
+            <small>Name must be at least 2 characters.</small>
+          }
+        }
+      </div>
+
+      <div class="form-control">
+        <label for="email">Email</label>
+
+        <input
+          id="email"
+          type="email"
+          placeholder="Enter email"
+          formControlName="email"
+        >
+
+        @if (emailControl.invalid && emailControl.touched) {
+          @if (emailControl.hasError('required')) {
+            <small>Email is required.</small>
+          }
+
+          @if (emailControl.hasError('email')) {
+            <small>Enter valid email.</small>
+          }
+        }
+      </div>
+
+      <div class="form-control">
+        <label for="password">Password</label>
+
+        <input
+          id="password"
+          type="password"
+          placeholder="Enter password"
+          formControlName="password"
+        >
+
+        @if (passwordControl.invalid && passwordControl.touched) {
+          @if (passwordControl.hasError('required')) {
+            <small>Password is required.</small>
+          }
+
+          @if (passwordControl.hasError('minlength')) {
+            <small>Password must be at least 8 characters.</small>
+          }
+        }
+      </div>
+
+      <button type="submit" [disabled]="signupForm.invalid || isLoading()">
+        {{ isLoading() ? 'Creating account...' : 'Signup' }}
+      </button>
+    </form>
+
+    <p>
+      Already have an account?
+      <a routerLink="/login">Login</a>
+    </p>
+  </div>
+</section>

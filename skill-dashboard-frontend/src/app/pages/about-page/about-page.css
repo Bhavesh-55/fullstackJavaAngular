@@ -1,0 +1,14 @@
+.page {
+  width: 70%;
+  margin: 40px auto;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.page h2 {
+  color: #1976d2;
+}
+
+.page ul {
+  margin-top: 20px;
+}
